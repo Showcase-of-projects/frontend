@@ -1,0 +1,194 @@
+import { useState } from "react";
+import ProjectCard from "../components/ProjectCard";
+import Header from "../components/Header";
+import "../css/showcase.css";
+
+const projects = [
+  {
+    title: "Навигатор ИУЦТ, ЦТУТП",
+    goal: "Снизить время поиска маршрута до необходимой аудитории на 20%",
+    department: " ЦТУТП",
+    projectType: " Учебно-прикладной проект",
+    problemHolder: " Заведующий хозяйством ИУЦТ ",
+  },
+  {
+    title: "Энергоэффективное депо, ХиИЭ",
+    goal: "Хочет повысить энергоэффективность зданий и сооружений депо на 20%",
+    department: " ХиИЭ",
+    projectType: " Прикладной проект",
+    problemHolder: " Главный инженер депо",
+  },
+  {
+    title: "В любую точку Москвы на одном самокате, ЛТСТ",
+    goal: "Хочет увеличить сеть беспересадочных (длинных) маршрутов на самокатах в пределах Москвы (кол-во возможных маршрутов увеличить на 20 %)",
+    department: " ЛТСТ",
+    projectType: " Учебный проект",
+    problemHolder:
+      " Менеджер по работе с клиентами прокатной компании самокатов",
+  },
+  {
+    title: "Вышивальщица, ЦТУТП",
+    goal: "Хочет уменьшить количество бракованных изделий до 5%",
+    department: " ЦТУТП",
+    projectType: " Учебно-прикладной проект",
+    problemHolder: " Главный технолог ООО Вышивальщица",
+  },
+  {
+    title: "Навигатор ИУЦТ, ЦТУТП",
+    goal: "Снизить время поиска маршрута до необходимой аудитории на 20%",
+    department: " ЦТУТП",
+    projectType: " Учебно-прикладной проект",
+    problemHolder: " Заведующий хозяйством ИУЦТ ",
+  },
+  {
+    title: "Энергоэффективное депо, ХиИЭ",
+    goal: "Хочет повысить энергоэффективность зданий и сооружений депо на 20%",
+    department: " ХиИЭ",
+    projectType: " Прикладной проект",
+    problemHolder: " Главный инженер депо",
+  },
+  {
+    title: "В любую точку Москвы на одном самокате, ЛТСТ",
+    goal: "Хочет увеличить сеть беспересадочных (длинных) маршрутов на самокатах в пределах Москвы (кол-во возможных маршрутов увеличить на 20 %)",
+    department: " ЛТСТ",
+    projectType: " Учебный проект",
+    problemHolder:
+      " Менеджер по работе с клиентами прокатной компании самокатов",
+  },
+  {
+    title: "Вышивальщица, ЦТУТП",
+    goal: "Хочет уменьшить количество бракованных изделий до 5%",
+    department: " ЦТУТП",
+    projectType: " Учебно-прикладной проект",
+    problemHolder: " Главный технолог ООО Вышивальщица",
+  },
+];
+const departments = [
+  "ЦТУТП",
+  "ХиИЭ",
+  "ЛТСТ",
+  "ЖДСТУ",
+  "ЛиУТС",
+  "УТБиИС",
+  "УЭРиБТ",
+];
+const projectTypes = [
+  "Учебный проект",
+  "Прикладной проект",
+  "Учебно-прикладной проект",
+];
+
+const HomePage = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedProjectType, setSelectedProjectType] = useState("");
+
+  const filteredProjects = projects.filter((project) => {
+    return (
+      project.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      (selectedDepartment ? project.department === selectedDepartment : true) &&
+      (selectedProjectType ? project.projectType === selectedProjectType : true)
+    );
+  });
+
+  return (
+    <div
+      className="d-flex flex-column align-items-center min-vh-100  p-3"
+      style={{
+        backgroundColor: "#F7FAFC",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        fontWeight: 50,
+        marginTop: "60px",
+      }}
+    >
+      <Header />
+      <div className="container" style={{ maxWidth: "1200px" }}>
+        <div className="d-flex flex-column w-100">
+          <div className="mb-3 w-100">
+            <div className="input-group w-100">
+              <span className="input-group-text bg-light border-0">
+                <i className="bi bi-search text-muted"></i>
+              </span>
+              <input
+                type="text"
+                className="form-control bg-light border-0 rounded-3 px-3 py-3 shadow-sm w-100"
+                placeholder="Поиск проекта..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="d-flex justify-content-start align-items-center gap-2 w-100">
+            <div className="dropdown">
+              <button
+                className="btn btn-outline-secondary btn-sm rounded-pill shadow-sm px-2"
+                style={{ minWidth: "100px" }}
+                onClick={() => {
+                  setSelectedDepartment("");
+                  setSelectedProjectType("");
+                }}
+              >
+                Все проекты
+              </button>
+            </div>
+
+            <div className="dropdown">
+              <button
+                className="btn btn-outline-secondary btn-sm rounded-pill dropdown-toggle shadow-sm px-2"
+                type="button"
+                data-bs-toggle="dropdown"
+                style={{ minWidth: "100px" }}
+              >
+                Кафедра
+              </button>
+              <ul className="dropdown-menu">
+                {departments.map((dept) => (
+                  <li key={dept}>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => setSelectedDepartment(dept)}
+                    >
+                      {dept}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="dropdown">
+              <button
+                className="btn btn-outline-secondary btn-sm rounded-pill dropdown-toggle shadow-sm px-2"
+                type="button"
+                data-bs-toggle="dropdown"
+                style={{ minWidth: "100px" }}
+              >
+                Тип проекта
+              </button>
+              <ul className="dropdown-menu">
+                {projectTypes.map((type) => (
+                  <li key={type}>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => setSelectedProjectType(type)}
+                    >
+                      {type}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="projects-wrapper">
+        {filteredProjects.map((project, index) => (
+          <ProjectCard key={index} {...project} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default HomePage;
