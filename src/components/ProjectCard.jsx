@@ -20,7 +20,7 @@ const ProjectCard = ({
       <div className="d-flex justify-content-between align-items-center">
         <div className="flex-grow-1">
           <Link
-            to={`/${title}`}
+            to={`/`}
             className="text-dark text-decoration-none fw-bold"
           >
             {title}
