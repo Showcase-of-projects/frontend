@@ -2,8 +2,8 @@ import { useState } from 'react'
 import './App.css'
 import HomePage from './page/HomePage'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import LoginPage from '../../bookingFront/front/src/pages/LoginPage';
-import SignUpPage from '../../bookingFront/front/src/pages/SignUpPage';
+import LoginPage from './page/LoginPage';
+import SignUpPage from './page/SignUpPage';
 
 
 
@@ -12,11 +12,14 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <HomePage />,
-    children: [
-      { path: "/", element: <HomePage /> },
-      { path: "/login", element: <LoginPage /> },
-      { path: "/signUp", element: <SignUpPage /> },
-    ],
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/signUp",
+    element: <SignUpPage />,
   },
 ]);
 
