@@ -4,11 +4,11 @@ import { ChevronDown, ChevronUp } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 
 const ProjectCard = ({
-  title,
+  name,
   goal,
-  department,
-  projectType,
-  problemHolder,
+  departmentDTO,
+  typeDTO,
+  problemCarrier,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -19,11 +19,8 @@ const ProjectCard = ({
     >
       <div className="d-flex justify-content-between align-items-center">
         <div className="flex-grow-1">
-          <Link
-            to={`/`}
-            className="text-dark text-decoration-none fw-bold"
-          >
-            {title}
+          <Link to={`/`} className="text-dark text-decoration-none fw-bold">
+            {name}
           </Link>
           <p className="text-muted mb-0">Цель проекта: {goal}</p>
         </div>
@@ -42,9 +39,9 @@ const ProjectCard = ({
       </div>
       {expanded && (
         <div className="mt-3 text-muted">
-          <p>Кафедра: {department}</p>
-          <p>Тип проекта: {projectType}</p>
-          <p>Носитель проблемы: {problemHolder}</p>
+          <p>Кафедра: {departmentDTO}</p>
+          <p>Тип проекта: {typeDTO}</p>
+          <p>Носитель проблемы: {problemCarrier}</p>
         </div>
       )}
     </Card>
