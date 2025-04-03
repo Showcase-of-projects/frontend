@@ -1,101 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProjectCard from "../components/ProjectCard";
 import Header from "../components/Header";
 import "../css/showcase.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-
-// const projects = [
-//   {
-//     title: "Навигатор ИУЦТ, ЦТУТП",
-//     goal: "Снизить время поиска маршрута до необходимой аудитории на 20%",
-//     department: " ЦТУТП",
-//     projectType: " Учебно-прикладной проект",
-//     problemHolder: " Заведующий хозяйством ИУЦТ ",
-//   },
-//   {
-//     title: "Энергоэффективное депо, ХиИЭ",
-//     goal: "Хочет повысить энергоэффективность зданий и сооружений депо на 20%",
-//     department: " ХиИЭ",
-//     projectType: " Прикладной проект",
-//     problemHolder: " Главный инженер депо",
-//   },
-//   {
-//     title: "В любую точку Москвы на одном самокате, ЛТСТ",
-//     goal: "Хочет увеличить сеть беспересадочных (длинных) маршрутов на самокатах в пределах Москвы (кол-во возможных маршрутов увеличить на 20 %)",
-//     department: " ЛТСТ",
-//     projectType: " Учебный проект",
-//     problemHolder:
-//       " Менеджер по работе с клиентами прокатной компании самокатов",
-//   },
-//   {
-//     title: "Вышивальщица, ЦТУТП",
-//     goal: "Хочет уменьшить количество бракованных изделий до 5%",
-//     department: " ЦТУТП",
-//     projectType: " Учебно-прикладной проект",
-//     problemHolder: " Главный технолог ООО Вышивальщица",
-//   },
-//   {
-//     title: "Навигатор ИУЦТ, ЦТУТП",
-//     goal: "Снизить время поиска маршрута до необходимой аудитории на 20%",
-//     department: " ЦТУТП",
-//     projectType: " Учебно-прикладной проект",
-//     problemHolder: " Заведующий хозяйством ИУЦТ ",
-//   },
-//   {
-//     title: "Энергоэффективное депо, ХиИЭ",
-//     goal: "Хочет повысить энергоэффективность зданий и сооружений депо на 20%",
-//     department: " ХиИЭ",
-//     projectType: " Прикладной проект",
-//     problemHolder: " Главный инженер депо",
-//   },
-//   {
-//     title: "В любую точку Москвы на одном самокате, ЛТСТ",
-//     goal: "Хочет увеличить сеть беспересадочных (длинных) маршрутов на самокатах в пределах Москвы (кол-во возможных маршрутов увеличить на 20 %)",
-//     department: " ЛТСТ",
-//     projectType: " Учебный проект",
-//     problemHolder:
-//       " Менеджер по работе с клиентами прокатной компании самокатов",
-//   },
-//   {
-//     title: "Вышивальщица, ЦТУТП",
-//     goal: "Хочет уменьшить количество бракованных изделий до 5%",
-//     department: " ЦТУТП",
-//     projectType: " Учебно-прикладной проект",
-//     problemHolder: " Главный технолог ООО Вышивальщица",
-//   },
-// ];
-// const departments = [
-//   "ЦТУТП",
-//   "ХиИЭ",
-//   "ЛТСТ",
-//   "ЖДСТУ",
-//   "ЛиУТС",
-//   "УТБиИС",
-//   "УЭРиБТ",
-// ];
-// const projectTypes = [
-//   "Учебный проект",
-//   "Прикладной проект",
-//   "Учебно-прикладной проект",
-// ];
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTopics } from "../redux/slices/topics";
 
 const HomePage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedDepartment, setSelectedDepartment] = useState("");
-  const [selectedProjectType, setSelectedProjectType] = useState("");
+  const dispatch = useDispatch();
+  const { topics } = useSelector((state) => state.topics);
 
-  const filteredProjects = projects.filter((project) => {
-    return (
-      project.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (selectedDepartment ? project.department === selectedDepartment : true) &&
-      (selectedProjectType ? project.projectType === selectedProjectType : true)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [selectedProjectType, setSelectedProjectType] = useState(null);
+
+  const departments = [...new Map(
+    topics
+      .filter(topic => topic.departmentDTO)
+      .map(topic => [topic.departmentDTO.id, topic.departmentDTO])
+  ).values()];
+
+  const projectTypes = [...new Map(
+    topics
+      .filter(topic => topic.typeDTO)
+      .map(topic => [topic.typeDTO.id, topic.typeDTO])
+  ).values()];
+
+  
+  useEffect(() => {
+    dispatch(
+      fetchTopics({
+        name: searchQuery || null,
+        departmentId: selectedDepartment?.id || null,
+        typeId: selectedProjectType?.id || null,
+      })
     );
-  });
+  }, [dispatch, searchQuery, selectedDepartment, selectedProjectType]);
 
   const handleClearSearch = () => {
     setSearchQuery("");
-    setSelectedDepartment("");
-    setSelectedProjectType("");
+    setSelectedDepartment(null);
+    setSelectedProjectType(null);
+  };
+
+  const handleDepartmentSelect = (dept) => {
+    setSelectedDepartment(dept);
+  };
+
+  const handleProjectTypeSelect = (type) => {
+    setSelectedProjectType(type);
   };
 
   return (
@@ -155,19 +108,27 @@ const HomePage = () => {
                 className="btn btn-sm rounded-pill shadow-sm px-2 text-dark border-0 dropdown-toggle"
                 type="button"
                 data-bs-toggle="dropdown"
+                aria-expanded="false"
                 style={{ minWidth: "100px", backgroundColor: "#EDEDED" }}
               >
-                Кафедра 
+                {selectedDepartment ? selectedDepartment.name : "Кафедра"}
               </button>
               <ul className="dropdown-menu">
                 {departments.map((dept) => (
-                  <li key={dept}>
+                  <li key={dept.id}>
                     <button
-                      className="dropdown-item"
+                      className={`dropdown-item ${
+                        selectedDepartment?.id === dept.id ? "active" : ""
+                      }`}
                       style={{ fontSize: "14px" }}
-                      onClick={() => setSelectedDepartment(dept)}
+                      onClick={() => handleDepartmentSelect(dept)}
                     >
-                      {dept}
+                      {dept.name}
+                      {selectedDepartment?.id === dept.id && (
+                        <span className="ms-2">
+                          <i className="bi bi-check"></i>
+                        </span>
+                      )}
                     </button>
                   </li>
                 ))}
@@ -179,19 +140,27 @@ const HomePage = () => {
                 className="btn btn-sm rounded-pill shadow-sm px-2 text-dark border-0 dropdown-toggle"
                 type="button"
                 data-bs-toggle="dropdown"
+                aria-expanded="false"
                 style={{ minWidth: "100px", backgroundColor: "#EDEDED" }}
               >
-                Тип проекта 
+                {selectedProjectType ? selectedProjectType.name : "Тип проекта"}
               </button>
               <ul className="dropdown-menu">
                 {projectTypes.map((type) => (
-                  <li key={type}>
+                  <li key={type.id}>
                     <button
-                      className="dropdown-item"
+                      className={`dropdown-item ${
+                        selectedProjectType?.id === type.id ? "active" : ""
+                      }`}
                       style={{ fontSize: "14px" }}
-                      onClick={() => setSelectedProjectType(type)}
+                      onClick={() => handleProjectTypeSelect(type)}
                     >
-                      {type}
+                      {type.name}
+                      {selectedProjectType?.id === type.id && (
+                        <span className="ms-2">
+                          <i className="bi bi-check"></i>
+                        </span>
+                      )}
                     </button>
                   </li>
                 ))}
@@ -202,8 +171,15 @@ const HomePage = () => {
       </div>
 
       <div className="projects-wrapper">
-        {filteredProjects.map((project, index) => (
-          <ProjectCard key={index} {...project} />
+        {topics.map((topic) => (
+          <ProjectCard
+            key={topic.id}
+            name={topic.name}
+            goal={topic.goal}
+            departmentDTO={topic.departmentDTO}
+            typeDTO={topic.typeDTO}
+            problemCarrier={topic.problemCarrier}
+          />
         ))}
       </div>
     </div>

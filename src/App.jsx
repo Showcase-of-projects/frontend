@@ -5,9 +5,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from './page/LoginPage';
 import SignUpPage from './page/SignUpPage';
 
-
-
-
 const router = createBrowserRouter([
   {
     path: "/",

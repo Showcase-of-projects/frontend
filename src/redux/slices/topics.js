@@ -10,7 +10,7 @@ export const fetchTopics = createAsyncThunk(
       });
       return response.data; 
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Ошибка сервера");
+      return rejectWithValue(error.response?.data);
     }
   }
 );
@@ -40,4 +40,5 @@ const topicsSlice = createSlice({
   },
 });
 
+export const { setTopics } = topicsSlice.actions;
 export default topicsSlice.reducer;

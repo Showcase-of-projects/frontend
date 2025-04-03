@@ -39,8 +39,8 @@ const ProjectCard = ({
       </div>
       {expanded && (
         <div className="mt-3 text-muted">
-          <p>Кафедра: {departmentDTO}</p>
-          <p>Тип проекта: {typeDTO}</p>
+          <p>Кафедра: {departmentDTO?.name}</p>
+          <p>Тип проекта: {typeDTO?.name}</p>
           <p>Носитель проблемы: {problemCarrier}</p>
         </div>
       )}
