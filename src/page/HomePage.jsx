@@ -4,29 +4,22 @@ import Header from "../components/Header";
 import "../css/showcase.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTopics } from "../redux/slices/topics";
+import {
+  fetchTopics,
+  fetchDepartments,
+  fetchProjectTypes,
+} from "../redux/slices/topics";
 
 const HomePage = () => {
   const dispatch = useDispatch();
-  const { topics } = useSelector((state) => state.topics);
+  const { topics, departments, projectTypes } = useSelector(
+    (state) => state.topics
+  );
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [selectedProjectType, setSelectedProjectType] = useState(null);
 
-  const departments = [...new Map(
-    topics
-      .filter(topic => topic.departmentDTO)
-      .map(topic => [topic.departmentDTO.id, topic.departmentDTO])
-  ).values()];
-
-  const projectTypes = [...new Map(
-    topics
-      .filter(topic => topic.typeDTO)
-      .map(topic => [topic.typeDTO.id, topic.typeDTO])
-  ).values()];
-
-  
   useEffect(() => {
     dispatch(
       fetchTopics({
@@ -36,6 +29,11 @@ const HomePage = () => {
       })
     );
   }, [dispatch, searchQuery, selectedDepartment, selectedProjectType]);
+
+  useEffect(() => {
+    dispatch(fetchDepartments());
+    dispatch(fetchProjectTypes());
+  }, [dispatch]);
 
   const handleClearSearch = () => {
     setSearchQuery("");
@@ -171,16 +169,25 @@ const HomePage = () => {
       </div>
 
       <div className="projects-wrapper">
-        {topics.map((topic) => (
-          <ProjectCard
-            key={topic.id}
-            name={topic.name}
-            goal={topic.goal}
-            departmentDTO={topic.departmentDTO}
-            typeDTO={topic.typeDTO}
-            problemCarrier={topic.problemCarrier}
-          />
-        ))}
+        {topics.length === 0 ? (
+          <div
+            className="text-center text-muted"
+            style={{ fontSize: "1rem", fontWeight: 500 }}
+          >
+            По вашему запросу ничего не найдено
+          </div>
+        ) : (
+          topics.map((topic) => (
+            <ProjectCard
+              key={topic.id}
+              name={topic.name}
+              goal={topic.goal}
+              departmentDTO={topic.departmentDTO}
+              typeDTO={topic.typeDTO}
+              problemCarrier={topic.problemCarrier}
+            />
+          ))
+        )}
       </div>
     </div>
   );

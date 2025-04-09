@@ -14,4 +14,9 @@
     background-color: #EDEDED !important;
   }
 
-  
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:active {
+  background-color: #EDEDED; 
+  color: #000; 
+}
+
