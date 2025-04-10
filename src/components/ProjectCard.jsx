@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 
 const ProjectCard = ({
+  id,
   name,
   goal,
   departmentDTO,
@@ -19,7 +20,7 @@ const ProjectCard = ({
     >
       <div className="d-flex justify-content-between align-items-center">
         <div className="flex-grow-1">
-          <Link to={`/`} className="text-dark text-decoration-none fw-bold">
+          <Link to={`/topics/${id}`} className="text-dark text-decoration-none fw-bold">
             {name}
           </Link>
           <p className="text-muted mb-0">Цель проекта: {goal}</p>

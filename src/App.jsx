@@ -4,11 +4,16 @@ import HomePage from './page/HomePage'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from './page/LoginPage';
 import SignUpPage from './page/SignUpPage';
+import TopicPage from "./page/TopicPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <HomePage />,
+  },
+  {
+    path: "/topics/:id",
+    element: <TopicPage/>,
   },
   {
     path: "/login",

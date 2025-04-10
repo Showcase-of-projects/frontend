@@ -180,6 +180,7 @@ const HomePage = () => {
           topics.map((topic) => (
             <ProjectCard
               key={topic.id}
+              id={topic.id}
               name={topic.name}
               goal={topic.goal}
               departmentDTO={topic.departmentDTO}

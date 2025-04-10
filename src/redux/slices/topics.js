@@ -39,10 +39,23 @@ export const fetchProjectTypes = createAsyncThunk(
   }
 );
 
+export const fetchTopicById = createAsyncThunk(
+  "topics/fetchTopicById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/topics/get/${id}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data);
+    }
+  }
+);
+
 const topicsSlice = createSlice({
   name: "topics",
   initialState: {
     topics: [],
+    selectedTopic: null,
     departments: [],
     projectTypes: [],
     loading: false,
@@ -51,23 +64,17 @@ const topicsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTopics.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(fetchTopics.fulfilled, (state, action) => {
-        state.loading = false;
         state.topics = action.payload;
-      })
-      .addCase(fetchTopics.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       })
       .addCase(fetchDepartments.fulfilled, (state, action) => {
         state.departments = action.payload;
       })
       .addCase(fetchProjectTypes.fulfilled, (state, action) => {
         state.projectTypes = action.payload;
+      })
+      .addCase(fetchTopicById.fulfilled, (state, action) => {
+        state.selectedTopic = action.payload;
       });
   },
 });
