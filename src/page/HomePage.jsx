@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import ProjectCard from "../components/ProjectCard";
+import { Navigate } from "react-router-dom";
 import Header from "../components/Header";
 import "../css/showcase.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -11,6 +12,8 @@ import {
 } from "../redux/slices/topics";
 
 const HomePage = () => {
+  const token = localStorage.getItem("token");
+  
   const dispatch = useDispatch();
   const { topics, departments, projectTypes } = useSelector(
     (state) => state.topics
@@ -20,6 +23,7 @@ const HomePage = () => {
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [selectedProjectType, setSelectedProjectType] = useState(null);
 
+  
   useEffect(() => {
     dispatch(
       fetchTopics({
@@ -48,6 +52,10 @@ const HomePage = () => {
   const handleProjectTypeSelect = (type) => {
     setSelectedProjectType(type);
   };
+
+  if (!token) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <div

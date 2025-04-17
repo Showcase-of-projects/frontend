@@ -6,6 +6,7 @@ import LoginPage from './page/LoginPage';
 import SignUpPage from './page/SignUpPage';
 import TopicPage from "./page/TopicPage";
 
+
 const router = createBrowserRouter([
   {
     path: "/",

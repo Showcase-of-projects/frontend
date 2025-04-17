@@ -1,7 +1,15 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.png";
 
 const Header = () => {
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    navigate("/login"); 
+  };
+
   return (
     <header
       className="header w-100 fixed-top shadow-sm p-3"
@@ -28,6 +36,15 @@ const Header = () => {
             Команда
           </Link>
         </nav>
+        <div className="ms-auto">
+          <button
+            onClick={logout}
+            className="text-decoration-none text-dark fw-normal"
+            style={{ background: "none", border: "none", cursor: "pointer" }}
+          >
+            Выйти
+          </button>
+        </div>
       </div>
     </header>
   );
