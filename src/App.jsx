@@ -1,10 +1,12 @@
-import { useState } from 'react'
-import './App.css'
-import HomePage from './page/HomePage'
+
+import './App.css';
+import HomePage from './page/HomePage';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from './page/LoginPage';
 import SignUpPage from './page/SignUpPage';
 import TopicPage from "./page/TopicPage";
+import TeamPage from "./page/TeamPage";
+
 
 
 const router = createBrowserRouter([
@@ -24,10 +26,13 @@ const router = createBrowserRouter([
     path: "/signUp",
     element: <SignUpPage />,
   },
+  {
+    path: "/team",
+    element: <TeamPage/>,
+  },
 ]);
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>

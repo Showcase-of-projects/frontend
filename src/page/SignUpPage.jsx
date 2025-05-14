@@ -15,6 +15,7 @@ const SignUpPage = () => {
   const [redirect, setRedirect] = React.useState(false);
 
   const onSubmit = async (data) => {
+    console.log(data);
     const response = await dispatch(signup(data));
 
     if (!response.payload) {
@@ -24,6 +25,7 @@ const SignUpPage = () => {
     if ("token" in response.payload.data) {
       localStorage.setItem("token", response.payload.data.token);
     }
+    console.log(response);
 
     setRedirect(true);
   };

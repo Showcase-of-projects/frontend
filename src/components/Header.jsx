@@ -32,7 +32,7 @@ const Header = () => {
           >
             Главная
           </Link>
-          <Link to="/" className="text-decoration-none text-dark fw-normal">
+          <Link to="/team" className="text-decoration-none text-dark fw-normal">
             Команда
           </Link>
         </nav>

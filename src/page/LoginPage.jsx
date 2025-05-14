@@ -16,15 +16,17 @@ const LoginPage = () => {
 
   const onSubmit = async (data) => {
     const response = await dispatch(login(data));
-
+  
     if (!response.payload) {
       return alert("Не удалось войти");
     }
-
-    if ("token" in response.payload.data) {
+  
+    if (response.payload.data && "token" in response.payload.data) {
       localStorage.setItem("token", response.payload.data.token);
+    } else {
+      return alert("Ошибка: отсутствует токен");
     }
-
+  
     setRedirect(true);
   };
 
