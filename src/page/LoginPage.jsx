@@ -21,10 +21,9 @@ const LoginPage = () => {
       return alert("Не удалось войти");
     }
   
-    if (response.payload.data && "token" in response.payload.data) {
-      localStorage.setItem("token", response.payload.data.token);
-    } else {
-      return alert("Ошибка: отсутствует токен");
+ if (!response.payload || !response.payload.token) {
+      alert("Не удалось войти: отсутствует токен");
+      return;
     }
   
     setRedirect(true);

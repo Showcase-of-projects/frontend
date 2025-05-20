@@ -13,7 +13,7 @@ import {
 
 const HomePage = () => {
   const token = localStorage.getItem("token");
-  
+
   const dispatch = useDispatch();
   const { topics, departments, projectTypes } = useSelector(
     (state) => state.topics
@@ -23,7 +23,6 @@ const HomePage = () => {
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [selectedProjectType, setSelectedProjectType] = useState(null);
 
-  
   useEffect(() => {
     dispatch(
       fetchTopics({
@@ -58,147 +57,160 @@ const HomePage = () => {
   }
 
   return (
-    <div
-      className="d-flex flex-column align-items-center min-vh-100 p-3"
-      style={{
-        backgroundColor: "#F7FAFC",
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
-        fontWeight: 50,
-        marginTop: "3em",
-      }}
-    >
+    <>
       <Header />
-      <div className="container" style={{ maxWidth: "1200px" }}>
-        <div className="d-flex flex-column w-100">
-          <div className="mb-2 w-100">
-            <div className="position-relative w-100">
-              <span className="position-absolute start-0 top-50 translate-middle-y ps-3">
-                <i className="bi bi-search text-muted"></i>
-              </span>
-              <input
-                type="text"
-                className="form-control border-0 rounded-3 px-5 py-3 shadow-sm w-100"
-                placeholder="Поиск проекта..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ backgroundColor: "#EDEDED" }}
-              />
-              {searchQuery && (
-                <span
-                  className="position-absolute top-50 translate-middle-y"
-                  onClick={() => setSearchQuery("")}
-                  style={{
-                    right: "20px",
-                    cursor: "pointer",
-                  }}
-                >
-                  <i className="bi bi-x-circle text-muted"></i>
+      <div
+        className="content-wrapper"
+        style={{
+          paddingTop: "70px",
+          backgroundColor: "#F7FAFC",
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontWeight: 50,
+          minHeight: "100vh",
+          paddingLeft: "1rem",
+          paddingRight: "1rem",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <div className="container" style={{ maxWidth: "1200px" }}>
+          <div className="d-flex flex-column w-100">
+            <div className="mb-2 w-100">
+              <div className="position-relative w-100">
+                <span className="position-absolute start-0 top-50 translate-middle-y ps-3 search-icon">
+                  <i className="bi bi-search text-muted"></i>
                 </span>
-              )}
-            </div>
-          </div>
-
-          <div className="d-flex justify-content-start align-items-center gap-2 w-100">
-            <div className="dropdown">
-              <button
-                className="btn btn-sm rounded-pill shadow-sm px-2 text-dark border-0"
-                style={{ minWidth: "100px", backgroundColor: "#EDEDED" }}
-                onClick={handleClearSearch}
-              >
-                Все проекты
-              </button>
-            </div>
-
-            <div className="dropdown">
-              <button
-                className="btn btn-sm rounded-pill shadow-sm px-2 text-dark border-0 dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                style={{ minWidth: "100px", backgroundColor: "#EDEDED" }}
-              >
-                {selectedDepartment ? selectedDepartment.name : "Кафедра"}
-              </button>
-              <ul className="dropdown-menu">
-                {departments.map((dept) => (
-                  <li key={dept.id}>
-                    <button
-                      className={`dropdown-item ${
-                        selectedDepartment?.id === dept.id ? "active" : ""
-                      }`}
-                      style={{ fontSize: "14px" }}
-                      onClick={() => handleDepartmentSelect(dept)}
-                    >
-                      {dept.name}
-                      {selectedDepartment?.id === dept.id && (
-                        <span className="ms-2">
-                          <i className="bi bi-check"></i>
-                        </span>
-                      )}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                <input
+                  type="text"
+                  className="form-control border-0 rounded-3 px-5 py-3 shadow-sm w-100 search-input"
+                  placeholder="Поиск проекта..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ backgroundColor: "#EDEDED" }}
+                />
+                {searchQuery && (
+                  <span
+                    className="position-absolute top-50 translate-middle-y clear-icon"
+                    onClick={() => setSearchQuery("")}
+                    style={{
+                      right: "20px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <i className="bi bi-x-circle text-muted"></i>
+                  </span>
+                )}
+              </div>
             </div>
 
-            <div className="dropdown">
-              <button
-                className="btn btn-sm rounded-pill shadow-sm px-2 text-dark border-0 dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                style={{ minWidth: "100px", backgroundColor: "#EDEDED" }}
-              >
-                {selectedProjectType ? selectedProjectType.name : "Тип проекта"}
-              </button>
-              <ul className="dropdown-menu">
-                {projectTypes.map((type) => (
-                  <li key={type.id}>
-                    <button
-                      className={`dropdown-item ${
-                        selectedProjectType?.id === type.id ? "active" : ""
-                      }`}
-                      style={{ fontSize: "14px" }}
-                      onClick={() => handleProjectTypeSelect(type)}
-                    >
-                      {type.name}
-                      {selectedProjectType?.id === type.id && (
-                        <span className="ms-2">
-                          <i className="bi bi-check"></i>
-                        </span>
-                      )}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+            <div className="d-flex flex-wrap justify-content-start align-items-start gap-2 w-100">
+              <div className="dropdown">
+                <button
+                  className="btn btn-sm rounded-pill shadow-sm px-2 text-dark border-0 filter-button"
+                  style={{ minWidth: "100px", backgroundColor: "#EDEDED" }}
+                  onClick={handleClearSearch}
+                >
+                  Все проекты
+                </button>
+              </div>
+
+              <div className="dropdown">
+                <button
+                  className="btn btn-sm rounded-pill shadow-sm px-2 text-dark border-0 filter-button"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  style={{ minWidth: "100px", backgroundColor: "#EDEDED" }}
+                >
+                  {selectedDepartment ? selectedDepartment.name : "Кафедра"}
+                </button>
+                <ul className="dropdown-menu">
+                  {departments.map((dept) => (
+                    <li key={dept.id}>
+                      <button
+                        className={`dropdown-item ${
+                          selectedDepartment?.id === dept.id ? "active" : ""
+                        }`}
+                        style={{ fontSize: "14px" }}
+                        onClick={() => handleDepartmentSelect(dept)}
+                      >
+                        {dept.name}
+                        {selectedDepartment?.id === dept.id && (
+                          <span className="ms-2">
+                            <i className="bi bi-check"></i>
+                          </span>
+                        )}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="dropdown">
+                <button
+                  className="btn btn-sm rounded-pill shadow-sm px-2 text-dark border-0 filter-button"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  style={{ minWidth: "100px", backgroundColor: "#EDEDED" }}
+                >
+                  {selectedProjectType
+                    ? selectedProjectType.name
+                    : "Тип проекта"}
+                </button>
+                <ul className="dropdown-menu">
+                  {projectTypes.map((type) => (
+                    <li key={type.id}>
+                      <button
+                        className={`dropdown-item ${
+                          selectedProjectType?.id === type.id ? "active" : ""
+                        }`}
+                        style={{ fontSize: "14px" }}
+                        onClick={() => handleProjectTypeSelect(type)}
+                      >
+                        {type.name}
+                        {selectedProjectType?.id === type.id && (
+                          <span className="ms-2">
+                            <i className="bi bi-check"></i>
+                          </span>
+                        )}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="projects-wrapper">
-        {topics.length === 0 ? (
-          <div
-            className="text-center text-muted"
-            style={{ fontSize: "1rem", fontWeight: 500 }}
-          >
-            По вашему запросу ничего не найдено
-          </div>
-        ) : (
-          topics.map((topic) => (
-            <ProjectCard
-              key={topic.id}
-              id={topic.id}
-              name={topic.name}
-              goal={topic.goal}
-              departmentDTO={topic.departmentDTO}
-              typeDTO={topic.typeDTO}
-              problemCarrier={topic.problemCarrier}
-            />
-          ))
-        )}
+        <div
+          className="projects-wrapper"
+          style={{ width: "100%", maxWidth: "1200px", marginTop: "1.5rem" }}
+        >
+          {topics.length === 0 ? (
+            <div
+              className="text-center text-muted"
+              style={{ fontSize: "1rem", fontWeight: 500 }}
+            >
+              По вашему запросу ничего не найдено
+            </div>
+          ) : (
+            topics.map((topic) => (
+              <ProjectCard
+                key={topic.id}
+                id={topic.id}
+                name={topic.name}
+                goal={topic.goal}
+                departmentDTO={topic.departmentDTO}
+                typeDTO={topic.typeDTO}
+                problemCarrier={topic.problemCarrier}
+              />
+            ))
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

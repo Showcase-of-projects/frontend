@@ -4,9 +4,9 @@ import api from "../../axiosInstance";
 
   export const addTeamData = createAsyncThunk(
     "team/addTeamData",
-    async (teamData, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
       try {
-        const response = await api.post("/teams/create", teamData);
+        const response = await api.post("/teams/create", {});
         return response.data;
       } catch (error) {
         return rejectWithValue(error.response?.data || "Ошибка при создании команды");

@@ -1,180 +1,246 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addTeamData } from "../redux/slices/team";
-import Modal from "../components/ModalTeam";
+import Header from "../components/Header";
 
-export default function TeamPage() {
-  const dispatch = useDispatch();
+const TeamPage = () => {
+  const token = useSelector((state) => state.auth.token);
+  const team = useSelector((state) => state.team.team);
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
-  const [teamName, setTeamName] = useState('');
-  const [topicId, setTopicId] = useState('');
-  
-  const { 
-    user: currentUser, 
-    isAuthenticated, 
-    loading: authLoading 
-  } = useSelector(state => state.auth);
-  
-  const userTeam = useSelector(state => state.team?.userTeam);
-  const teamLoading = useSelector(state => state.team?.loading);
-  const teamError = useSelector(state => state.team?.error);
 
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      navigate('/login');
+  React.useEffect(() => {
+    if (!token) {
+      navigate("/login");
     }
-  }, [isAuthenticated, authLoading, navigate]);
+  }, [token, navigate]);
 
-  const handleCreateTeam = () => {
-    if (!teamName.trim() || !topicId || !currentUser) return;
-    
-    const teamData = {
-      name: teamName,
-      topicId: Number(topicId),
-      lead: {
-        id: currentUser.id,
-        name: currentUser.name,
-        surname: currentUser.surname,
-        patronymic: currentUser.patronymic || '',
-        group: currentUser.group || '',
-        role: 'leader' 
-      },
-      userDTOS: [{
-        id: currentUser.id,
-        name: currentUser.name,
-        surname: currentUser.surname,
-        patronymic: currentUser.patronymic || '',
-        group: currentUser.group || '',
-        role: 'member'
-      }],
-      active: true
-    };
+  if (!token) return null;
 
-    dispatch(addTeamData(teamData))
-      .unwrap()
-      .then(() => {
-        setShowModal(false);
-        setTeamName('');
-        setTopicId('');
-      })
-      .catch(error => {
-        console.error('Ошибка при создании команды:', error);
-      });
-  };
-  if (authLoading || teamLoading) {
-    return (
-      <div className="container py-5 text-center">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Загрузка...</span>
-        </div>
-      </div>
-    );
-  }
+  const teamMembers = [
+    { name: "Елизавета Макарова", role: "Teamlead" },
+    { name: "Александр Смирнов", role: "Backend developer" },
+    { name: "Анна Николаева", role: "Frontend developer" },
+  ];
 
-  if (teamError) {
-    return (
-      <div className="container py-5">
-        <div className="alert alert-danger">
-          Произошла ошибка: {teamError.message || 'Неизвестная ошибка'}
-        </div>
-      </div>
-    );
-  }
+  const files = [
+    { name: "Product Roadmap (1).pdf", date: "2023-01-05", size: "12MB" },
+    { name: "Product Roadmap (2).pdf", date: "2023-01-05", size: "33MB" },
+    { name: "Product Roadmap (3).pdf", date: "2023-01-05", size: "28MB" },
+    { name: "Product Roadmap (1).pdf", date: "2023-01-05", size: "12MB" },
+  ];
 
   return (
-    <div className="container py-5">
-      {!userTeam ? (
-        <div className="text-center">
-          <h3>У вас еще нет команды</h3>
-          <button 
-            className="btn btn-primary mt-3"
-            onClick={() => setShowModal(true)}
-            disabled={!isAuthenticated}
-          >
-            Создать команду
-          </button>
-          {!isAuthenticated && (
-            <p className="text-muted mt-2">Для создания команды необходимо авторизоваться</p>
-          )}
-        </div>
-      ) : (
-        <div>
-          <h2>Ваша команда: {userTeam.name}</h2>
-          <div className="card mt-3">
-            <div className="card-body">
-              <h4 className="card-title">
-                Лидер: {userTeam.lead.name} {userTeam.lead.surname}
-              </h4>
-              <h5 className="mt-3">Участники:</h5>
-              <ul className="list-group">
-                {userTeam.userDTOS?.map((member, index) => (
-                  <li key={index} className="list-group-item">
-                    {member.name} {member.surname} ({member.role})
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
+    <>
+      <Header />
+      <div
+        style={{
+          paddingTop: "70px",
+          backgroundColor: "#F7FAFC",
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          minHeight: "100vh",
+          padding: "2rem",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            display: "flex",
+            gap: "2rem",
+          }}
+        >
+          <div style={{ width: "60%" }}>
+            <h1
+              style={{
+                fontSize: "24px",
+                fontWeight: "600",
+                marginBottom: "2rem",
+              }}
+            >
+              {team?.name || "Название команды"}
+            </h1>
 
-      <Modal open={showModal} onClose={() => setShowModal(false)}>
-        <div className="p-4">
-          <h3 className="mb-4">Создание новой команды</h3>
-          
-          <div className="mb-3">
-            <label htmlFor="teamName" className="form-label">Название команды *</label>
-            <input
-              type="text"
-              className="form-control"
-              id="teamName"
-              value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
-              required
-              minLength={3}
-            />
-            <div className="form-text">Минимум 3 символа</div>
-          </div>
-          
-          <div className="mb-4">
-            <label htmlFor="topicId" className="form-label">ID темы *</label>
-            <input
-              type="number"
-              className="form-control"
-              id="topicId"
-              value={topicId}
-              onChange={(e) => setTopicId(e.target.value)}
-              required
-              min={1}
-            />
-            <div className="form-text">Числовой идентификатор темы</div>
-          </div>
-          
-          {teamError && (
-            <div className="alert alert-danger mb-3">
-              {teamError.message || 'Ошибка при создании команды'}
+            <div style={{ marginBottom: "2rem" }}>
+              <h2
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  marginBottom: "1rem",
+                }}
+              >
+                Команда группы УВП-312
+              </h2>
+              <h3
+                style={{
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  marginBottom: "1rem",
+                }}
+              >
+                Навигатор ИУЦТ
+              </h3>
+
+              <div style={{ padding: "1rem" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr>
+                      <th
+                        style={{
+                          textAlign: "left",
+                          padding: "8px 0",
+                          fontWeight: "500",
+                        }}
+                      >
+                        Команда
+                      </th>
+                      <th style={{ textAlign: "right", padding: "8px 0" }}>
+                        <a
+                          href="#"
+                          style={{
+                            color: "#3b82f6",
+                            textDecoration: "none",
+                            fontWeight: "500",
+                            fontSize: "14px",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px",
+                          }}
+                        >
+                          <span>Пригласить</span>
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M12 4V20M20 12H4"
+                              stroke="#3b82f6"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {teamMembers.map((member, index) => (
+                      <tr
+                        key={index}
+                        style={{
+                          borderTop: index !== 0 ? "1px solid #eee" : "none",
+                        }}
+                      >
+                        <td
+                          style={{ padding: "12px 0", verticalAlign: "top" }}
+                          colSpan={2}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "12px",
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "40px",
+                                height: "40px",
+                                borderRadius: "50%",
+                                backgroundColor: "#e0e0e0",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                overflow: "hidden",
+                              }}
+                            >
+                              <span style={{ color: "#666" }}>
+                                {member.name
+                                  .split(" ")
+                                  .map((n) => n[0])
+                                  .join("")}
+                              </span>
+                            </div>
+                            <div>
+                              <div style={{ fontWeight: "500" }}>
+                                {member.name}
+                              </div>
+                              <div
+                                style={{
+                                  color: "#666",
+                                  fontSize: "14px",
+                                  marginTop: "4px",
+                                }}
+                              >
+                                {member.role}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          )}
-          
-          <div className="d-flex justify-content-end">
-            <button 
-              className="btn btn-outline-secondary me-2" 
-              onClick={() => setShowModal(false)}
+          </div>
+          <div style={{ width: "40%" }}>
+            <h2
+              style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                marginBottom: "1rem",
+                visibility: "hidden",
+              }}
             >
-              Отмена
-            </button>
-            <button 
-              className="btn btn-primary"
-              onClick={handleCreateTeam}
-              disabled={!teamName.trim() || !topicId}
-            >
-              Создать команду
-            </button>
+              Загруженные файлы
+            </h2>
+
+            <div style={{ marginTop: "3.5rem" }}>
+              <h2
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  marginBottom: "1rem",
+                }}
+              >
+                Загруженные файлы
+              </h2>
+
+              <div
+                style={{
+                  padding: "1rem",
+                }}
+              >
+                {files.map((file, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "12px 0",
+                      borderTop: index !== 0 ? "1px solid #eee" : "none",
+                    }}
+                  >
+                    <div style={{ fontWeight: "500" }}>{file.name}</div>
+                    <div
+                      style={{ display: "flex", gap: "2rem", color: "#666" }}
+                    >
+                      <span>{file.date}</span>
+                      <span>{file.size}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-      </Modal>
-    </div>
+      </div>
+    </>
   );
-}
+};
+
+export default TeamPage;

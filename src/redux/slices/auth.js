@@ -6,7 +6,7 @@ export const login = createAsyncThunk("api/v1/auth/login", async (params) => {
   const response = await api.post(
     `api/v1/auth/authenticate?login=${params.login}&password=${params.password}`
   );
-  return response;
+  return response.data;
 });
 
 export const signup = createAsyncThunk(
@@ -17,12 +17,16 @@ export const signup = createAsyncThunk(
       `/api/v1/auth/register`,
       params
     );
-    return response;
+    return response.data;
   }
 );
 
+const tokenFromStorage = localStorage.getItem("token");
+
+
 const initialState = {
   data: null,
+  token: tokenFromStorage || null,
   status: STATUS.PENDING,
 };
 
@@ -33,7 +37,13 @@ const authSlice = createSlice({
     logout: (state) => {
       localStorage.removeItem("token");
       state.data = null;
+      state.token = null;
+      state.status = STATUS.PENDING;
     },
+    setTokenFromStorage: (state, action) => {
+      state.token = action.payload;
+      state.status = STATUS.FULFILLED;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -43,10 +53,13 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.data = action.payload;
+        state.token = action.payload.token; 
+        localStorage.setItem("token", action.payload.token);
         state.status = STATUS.FULFILLED;
       })
       .addCase(login.rejected, (state) => {
-        state.data = null;
+         state.data = null;
+        state.token = null;
         state.status = STATUS.REJECTED;
       })
       .addCase(signup.pending, (state) => {
@@ -64,6 +77,6 @@ const authSlice = createSlice({
   },
 });
 
-export const selectIsAuth = (state) => Boolean(state.auth.data);
+export const selectIsAuth = (state) => Boolean(state.auth.token);
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;
