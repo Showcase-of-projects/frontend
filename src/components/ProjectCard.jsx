@@ -28,7 +28,7 @@ const ProjectCard = ({
   <div
     className="flex-grow-1"
     style={{
-      minWidth: 0, // чтобы перенос работал правильно
+      minWidth: 0, 
       overflowWrap: "break-word",
     }}
   >

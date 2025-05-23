@@ -30,7 +30,10 @@ api.interceptors.response.use(
       localStorage.removeItem("token");
       window.location.href = "/login";
     }
-    throw error;
+     const errorMessage = error.response?.data?.message || 
+                        error.message || 
+                        "Network Error";
+    return Promise.reject(new Error(errorMessage));
   }
 );
 

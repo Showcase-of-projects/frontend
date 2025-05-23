@@ -55,6 +55,7 @@ const topicsSlice = createSlice({
   name: "topics",
   initialState: {
     topics: [],
+    currentTopic: null,
     selectedTopic: null,
     departments: [],
     projectTypes: [],
@@ -75,6 +76,7 @@ const topicsSlice = createSlice({
       })
       .addCase(fetchTopicById.fulfilled, (state, action) => {
         state.selectedTopic = action.payload;
+        state.currentTopic = action.payload;
       });
   },
 });

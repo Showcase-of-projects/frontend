@@ -14,21 +14,31 @@ const SignUpPage = () => {
   const dispatch = useDispatch();
   const [redirect, setRedirect] = React.useState(false);
 
-  const onSubmit = async (data) => {
+const onSubmit = async (data) => {
+  try {
     console.log(data);
     const response = await dispatch(signup(data));
+    console.log("Ответ от сервера:", response);
+
 
     if (!response.payload) {
-      return alert("Не удалось зарегистрироваться");
+      alert("Не удалось зарегистрироваться");
+      return;
     }
 
-    if ("token" in response.payload.data) {
-      localStorage.setItem("token", response.payload.data.token);
+    const token = response.payload?.token;
+    if (token) {
+      localStorage.setItem("token", token);
+      setRedirect(true);
+    } else {
+      alert("Регистрация прошла, но токен не получен");
     }
-    console.log(response);
 
-    setRedirect(true);
-  };
+  } catch (error) {
+    console.error("Ошибка при регистрации:", error);
+    alert("Произошла ошибка при регистрации");
+  }
+};
 
   if (redirect) {
     return <Navigate to="/" />;
